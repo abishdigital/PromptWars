@@ -36,7 +36,9 @@ describe('Caregiver Portal API Tests', () => {
 
     jest.spyOn(User, 'findById').mockResolvedValue(mockCaregiver);
     jest.spyOn(User, 'find').mockReturnValue({
-      select: jest.fn().mockResolvedValue(mockPatients),
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockPatients),
+      }),
     });
 
     const res = await request(app)

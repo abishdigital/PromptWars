@@ -75,7 +75,9 @@ describe('Daily Check-In & Recovery Stats API Tests', () => {
     jest.spyOn(User, 'findById').mockResolvedValue(mockUser);
     jest.spyOn(CheckIn, 'find').mockReturnValue({
       sort: jest.fn().mockReturnValue({
-        limit: jest.fn().mockResolvedValue(mockHistory),
+        limit: jest.fn().mockReturnValue({
+          lean: jest.fn().mockResolvedValue(mockHistory),
+        }),
       }),
     });
 
