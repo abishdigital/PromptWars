@@ -54,13 +54,15 @@ const submitDailyCheckIn = async (userId, checkInData) => {
 const getCheckInHistory = async (userId, limit = 30) => {
   return await CheckIn.find({ userId })
     .sort({ date: -1 })
-    .limit(limit);
+    .limit(limit)
+    .lean();
 };
 
 const getCheckInStats = async (userId) => {
   const checkIns = await CheckIn.find({ userId })
     .sort({ date: -1 })
-    .limit(30);
+    .limit(30)
+    .lean();
 
   if (checkIns.length === 0) {
     return {

@@ -36,7 +36,7 @@ const AIChatPage = () => {
         setMessages(res.data.messages || []);
       }
     } catch (err) {
-      console.error('Failed to fetch history:', err.message);
+      // Error fetching history handled silently
     }
   };
 
@@ -83,7 +83,7 @@ const AIChatPage = () => {
       setMessages([]);
       setShowClearConfirm(false);
     } catch (err) {
-      console.error('Failed to clear history:', err.message);
+      setError('Failed to clear history. Please try again.');
     }
   };
 

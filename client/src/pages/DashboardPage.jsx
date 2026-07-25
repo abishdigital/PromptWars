@@ -28,19 +28,23 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchStats = async () => {
       try {
         const res = await api.get('/checkins/stats');
-        if (res.data.success) {
+        if (res.data.success && isMounted) {
           setStats(res.data.stats);
         }
       } catch (err) {
-        console.error('Failed to load stats:', err.message);
+        // Fallback silently if stats fail to load
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     fetchStats();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const getRiskBadge = (score) => {

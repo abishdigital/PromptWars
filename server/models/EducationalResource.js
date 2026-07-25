@@ -46,4 +46,6 @@ const EducationalResourceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+EducationalResourceSchema.index({ category: 1, createdAt: -1 });
+
 module.exports = mongoose.model('EducationalResource', EducationalResourceSchema);

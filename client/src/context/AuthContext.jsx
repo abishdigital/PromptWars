@@ -1,7 +1,17 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import api from '../services/api';
 
 const AuthContext = createContext();
+
+const saveAuthData = (token, user) => {
+  if (token) localStorage.setItem('recovery_token', token);
+  if (user) localStorage.setItem('recovery_user', JSON.stringify(user));
+};
+
+const clearAuthData = () => {
+  localStorage.removeItem('recovery_token');
+  localStorage.removeItem('recovery_user');
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -10,6 +20,12 @@ export const AuthProvider = ({ children }) => {
   });
   const [token, setToken] = useState(() => localStorage.getItem('recovery_token') || null);
   const [loading, setLoading] = useState(true);
+
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    clearAuthData();
+  }, []);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -21,22 +37,20 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('recovery_user', JSON.stringify(res.data.user));
           }
         } catch (err) {
-          console.error('Failed to verify token:', err.message);
           logout();
         }
       }
       setLoading(false);
     };
     initAuth();
-  }, [token]);
+  }, [token, logout]);
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
     if (res.data.success) {
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('recovery_token', res.data.token);
-      localStorage.setItem('recovery_user', JSON.stringify(res.data.user));
+      saveAuthData(res.data.token, res.data.user);
       return res.data.user;
     }
   };
@@ -46,8 +60,7 @@ export const AuthProvider = ({ children }) => {
     if (res.data.success) {
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('recovery_token', res.data.token);
-      localStorage.setItem('recovery_user', JSON.stringify(res.data.user));
+      saveAuthData(res.data.token, res.data.user);
       return res.data.user;
     }
   };
@@ -60,30 +73,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('recovery_token');
-    localStorage.removeItem('recovery_user');
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        loading,
-        isAuthenticated: !!token && !!user,
-        isCaregiver: user?.role === 'caregiver' || user?.role === 'admin',
-        login,
-        register,
-        updateProfile,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      token,
+      loading,
+      isAuthenticated: !!token && !!user,
+      isCaregiver: user?.role === 'caregiver' || user?.role === 'admin',
+      login,
+      register,
+      updateProfile,
+      logout,
+    }),
+    [user, token, loading, logout]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

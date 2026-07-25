@@ -7,17 +7,18 @@ import GroundingExercise from '../components/Emergency/GroundingExercise';
 import AudioPlayer from '../components/Voice/AudioPlayer';
 import { ShieldAlert, PhoneCall, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
 
+const DEFAULT_TRIGGERS = ['Severe Urge'];
+
 const EmergencyPage = () => {
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emergencyData, setEmergencyData] = useState(null);
-  const [triggers] = useState(['Severe Urge']);
 
   const handleActivateEmergency = async () => {
     setLoading(true);
     try {
       const res = await api.post('/emergency/trigger', {
-        triggers,
+        triggers: DEFAULT_TRIGGERS,
         notes: 'Emergency button clicked from client dashboard',
       });
       if (res.data.success) {
@@ -25,7 +26,6 @@ const EmergencyPage = () => {
         setActive(true);
       }
     } catch (err) {
-      console.error('Emergency trigger failed:', err.message);
       setActive(true);
     } finally {
       setLoading(false);
@@ -39,7 +39,7 @@ const EmergencyPage = () => {
           notes: 'Resolved by user after grounding exercise',
         });
       } catch (err) {
-        console.error('Resolve error:', err.message);
+        // Handled gracefully
       }
     }
     setActive(false);

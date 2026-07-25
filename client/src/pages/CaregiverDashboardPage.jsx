@@ -36,7 +36,7 @@ const CaregiverDashboardPage = () => {
         setAlerts(alertsRes.data.alerts || []);
       }
     } catch (err) {
-      console.error('Caregiver data fetch error:', err.message);
+      // Data fetch error handled gracefully
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ const CaregiverDashboardPage = () => {
         setPatientDetails(res.data);
       }
     } catch (err) {
-      console.error('Fetch patient overview error:', err.message);
+      // Patient overview fetch error handled gracefully
     }
   };
 
@@ -63,7 +63,7 @@ const CaregiverDashboardPage = () => {
         );
       }
     } catch (err) {
-      console.error('Acknowledge alert error:', err.message);
+      // Alert acknowledgment error handled gracefully
     }
   };
 

@@ -35,4 +35,6 @@ const CaregiverAlertSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+CaregiverAlertSchema.index({ caregiverId: 1, createdAt: -1 });
+
 module.exports = mongoose.model('CaregiverAlert', CaregiverAlertSchema);

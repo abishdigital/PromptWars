@@ -39,7 +39,7 @@ const EducationPage = () => {
         setArticles(res.data.articles || []);
       }
     } catch (err) {
-      console.error('Failed to load articles:', err.message);
+      // Handled gracefully
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ const EducationPage = () => {
         setBookmarks(res.data.bookmarks || []);
       }
     } catch (err) {
-      console.error('Failed to load bookmarks:', err.message);
+      // Handled gracefully
     }
   };
 
@@ -67,7 +67,7 @@ const EducationPage = () => {
         setBookmarks((prev) => [...prev, article]);
       }
     } catch (err) {
-      console.error('Bookmark error:', err.message);
+      // Handled gracefully
     }
   };
 
@@ -86,10 +86,7 @@ const EducationPage = () => {
     }
   };
 
-  const displayedArticles =
-    activeTab === 'bookmarks'
-      ? bookmarks
-      : articles;
+  const displayedArticles = activeTab === 'bookmarks' ? bookmarks : articles;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">

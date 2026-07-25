@@ -15,7 +15,7 @@ const SYSTEM_INSTRUCTION = `You are an empathetic, judgment-free AI Recovery Coa
 Your goal is to support users in addiction recovery, emotional wellness, craving management, and relapse prevention.
 Always speak with warmth, active listening, and calm encouragement. Use markdown formatting (bold text, bullet points) when helpful.
 IMPORTANT: You are an AI Recovery Coach, not a medical doctor or therapist. Do not diagnose conditions or prescribe medications.
-If a user expresses severe distress, self-harm thoughts, or overwhelming crisis, immediately remind them of 988 Suicide & Crisis Lifeline (call/text 988) or SAMHSA Helpline (1-800-662-4357).`;
+If a user expresses severe distress, self-harm thoughts, or overwhelming crisis, immediately remind them of Indian emergency helplines: National Emergency 112, iCall TISS Helpline (9152987821), Vandrevala Foundation 24/7 (1860-2662-345), or NIMHANS Mental Health Helpline (080-46110007).`;
 
 /**
  * Generate Recovery Coach chat response
@@ -134,7 +134,7 @@ const generateEmergencyGrounding = async (triggers = []) => {
 Provide an immediate, calm, reassuring response (under 120 words). 
 1. Reassure them that they are safe right now and cravings/distress are temporary.
 2. Direct them to begin the 5-4-3-2-1 grounding exercise and box breathing widget on screen.
-3. Remind them that 988 Suicide & Crisis Lifeline (call/text 988) is available 24/7.`;
+3. Remind them that National Emergency 112, iCall Helpline (9152987821), and Vandrevala Foundation (1860-2662-345) are available 24/7.`;
 
     const result = await model.generateContent(prompt);
     return result.response.text();
@@ -191,7 +191,7 @@ const getFallbackCheckInFeedback = (mood, craving, risk) => {
 };
 
 const getFallbackEmergencyGuidance = (triggerText) => {
-  return `You are in a safe space. You activated Emergency Crisis Mode because you are experiencing **${triggerText}**, and taking this action proves your deep commitment to your safety and recovery.\n\n1. **Breathe**: Take a slow deep breath in for 4 seconds, hold for 4, exhale for 4.\n2. **Ground**: Focus your physical weight on your feet touching the ground.\n3. **Support**: Reaching out is strength. Call or text **988** anytime for 24/7 free, confidential crisis support.`;
+  return `You are in a safe space. You activated Emergency Crisis Mode because you are experiencing **${triggerText}**, and taking this action proves your deep commitment to your safety and recovery.\n\n1. **Breathe**: Take a slow deep breath in for 4 seconds, hold for 4, exhale for 4.\n2. **Ground**: Focus your physical weight on your feet touching the ground.\n3. **Support**: Reaching out is strength. Call National Emergency **112**, iCall Helpline **9152987821**, or Vandrevala Foundation **1860-2662-345** anytime for 24/7 crisis support.`;
 };
 
 module.exports = {

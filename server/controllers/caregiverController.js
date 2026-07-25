@@ -8,7 +8,9 @@ const CaregiverAlert = require('../models/CaregiverAlert');
 const getPatients = async (req, res, next) => {
   try {
     const caregiverId = req.user.id;
-    const patients = await User.find({ caregiverId }).select('name email streak recoveryGoal lastCheckInDate createdAt');
+    const patients = await User.find({ caregiverId })
+      .select('name email streak recoveryGoal lastCheckInDate createdAt')
+      .lean();
 
     res.status(200).json({
       success: true,
@@ -27,13 +29,13 @@ const getPatientOverview = async (req, res, next) => {
     const caregiverId = req.user.id;
     const { patientId } = req.params;
 
-    const patient = await User.findOne({ _id: patientId, caregiverId }).select('-password');
+    const patient = await User.findOne({ _id: patientId, caregiverId }).select('-password').lean();
     if (!patient) {
       return res.status(404).json({ success: false, error: 'Patient not found or not assigned to you' });
     }
 
-    const checkIns = await CheckIn.find({ userId: patientId }).sort({ date: -1 }).limit(14);
-    const emergencyLogs = await EmergencyLog.find({ userId: patientId }).sort({ createdAt: -1 }).limit(5);
+    const checkIns = await CheckIn.find({ userId: patientId }).sort({ date: -1 }).limit(14).lean();
+    const emergencyLogs = await EmergencyLog.find({ userId: patientId }).sort({ createdAt: -1 }).limit(5).lean();
 
     const avgRisk = checkIns.length
       ? Math.round(checkIns.reduce((sum, c) => sum + c.riskScore, 0) / checkIns.length)
@@ -62,7 +64,8 @@ const getAlerts = async (req, res, next) => {
     const caregiverId = req.user.id;
     const alerts = await CaregiverAlert.find({ caregiverId })
       .populate('patientId', 'name email')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.status(200).json({
       success: true,

@@ -43,7 +43,7 @@ app.use(
       if (isAllowed) {
         callback(null, true);
       } else {
-        callback(null, true);
+        callback(new Error('CORS policy violation: Origin not permitted'));
       }
     },
     credentials: true,
