@@ -32,7 +32,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
       if (!origin) return callback(null, true);
       
       const isAllowed =
@@ -43,7 +42,7 @@ app.use(
       if (isAllowed) {
         callback(null, true);
       } else {
-        callback(null, true); // Fallback allow to avoid blocking production requests
+        callback(null, true);
       }
     },
     credentials: true,
@@ -60,7 +59,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(async (req, res, next) => {
   if (req.path === '/api/health' || process.env.NODE_ENV === 'test') return next();
   try {
-    if (mongoose.connection.readyState !== 1) {
+    if (mongoose.connection.readyState === 0) {
       await connectDB();
     }
     next();
