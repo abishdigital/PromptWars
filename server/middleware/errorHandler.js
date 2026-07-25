@@ -6,6 +6,15 @@ const errorHandler = (err, req, res, next) => {
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   let message = err.message || 'Internal Server Error';
 
+  // Mongoose buffering timeout or disconnected error
+  if (
+    err.name === 'MongooseError' &&
+    (err.message.includes('buffering timed out') || err.message.includes('topology was destroyed') || err.message.includes('disconnected'))
+  ) {
+    statusCode = 503;
+    message = 'Database connection timed out. Please verify your MongoDB Atlas connection string and ensure Network Access (IP Whitelist 0.0.0.0/0) is configured in your Atlas dashboard.';
+  }
+
   // Mongoose duplicate key error
   if (err.code === 11000) {
     statusCode = 400;

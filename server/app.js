@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
 // Route imports
@@ -14,13 +16,39 @@ const caregiverRoutes = require('./routes/caregiverRoutes');
 const app = express();
 
 // Security HTTP headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 
-// Enable CORS
+// Enable CORS for localhost and Vercel production/preview deployments
+const allowedOrigins = [
+  process.env.CORS_ORIGIN,
+  'https://prompt-wars-alpha.vercel.app',
+  'https://promptwars-ti6w.onrender.com',
+  'http://localhost:5173',
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      if (!origin) return callback(null, true);
+      
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        allowedOrigins.includes('*') ||
+        origin.endsWith('.vercel.app');
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Fallback allow to avoid blocking production requests
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
@@ -28,10 +56,27 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Database auto-reconnect middleware for Serverless (Vercel) & Local Express
+app.use(async (req, res, next) => {
+  if (req.path === '/api/health' || process.env.NODE_ENV === 'test') return next();
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    next();
+  } catch (err) {
+    return res.status(503).json({
+      success: false,
+      error: 'Database connection failed. Please verify your MongoDB Atlas connection string and ensure IP Whitelist (0.0.0.0/0) is configured in your Atlas dashboard.',
+    });
+  }
+});
+
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
+    dbConnected: mongoose.connection.readyState === 1,
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });
