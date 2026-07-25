@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Card from '../components/UI/Card';
-import Button from '../components/UI/Button';
 import Badge from '../components/UI/Badge';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
-import { Users, ShieldAlert, Heart, TrendingUp, CheckCircle, Copy, AlertTriangle } from 'lucide-react';
+import { Users, ShieldAlert, TrendingUp, Copy } from 'lucide-react';
 
 const CaregiverDashboardPage = () => {
   const { user } = useAuth();
@@ -87,31 +86,31 @@ const CaregiverDashboardPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Top Banner */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-indigo-500/20 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-indigo-500/20 bg-gradient-to-r from-indigo-50 via-white to-slate-50 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Caregiver Portal</span>
+            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Caregiver Portal</span>
           </div>
-          <h1 className="text-3xl font-black text-white">Supporter Dashboard</h1>
-          <p className="text-xs text-slate-300 max-w-lg mt-1">
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">Supporter Dashboard</h1>
+          <p className="text-xs text-slate-600 dark:text-slate-300 max-w-lg mt-1">
             Monitor recovery progress, daily check-in risk trends, and emergency alerts for individuals who linked you as their caregiver.
           </p>
         </div>
 
         {/* Caregiver Code Display */}
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700/80 space-y-1.5 shrink-0">
-          <span className="text-xs font-semibold text-slate-400">Your Unique Caregiver Code:</span>
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 space-y-1.5 shrink-0 shadow-sm">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Your Unique Caregiver Code:</span>
           <div className="flex items-center gap-3">
-            <span className="text-xl font-mono font-black text-brand-400">{user?.caregiverCode || 'CG-N/A'}</span>
+            <span className="text-xl font-mono font-black text-brand-600 dark:text-brand-400">{user?.caregiverCode || 'CG-N/A'}</span>
             <button
               onClick={copyCaregiverCode}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700"
               title="Copy code"
             >
               <Copy className="w-4 h-4" />
             </button>
           </div>
-          {copied && <p className="text-xs text-emerald-400 font-semibold">Copied to clipboard!</p>}
+          {copied && <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Copied to clipboard!</p>}
         </div>
       </div>
 
@@ -120,14 +119,14 @@ const CaregiverDashboardPage = () => {
         <div className="space-y-6">
           {/* Linked Patients List */}
           <Card className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Users className="w-5 h-5 text-brand-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Users className="w-5 h-5 text-brand-500" />
               <span>Assigned Individuals ({patients.length})</span>
             </h3>
 
             {patients.length === 0 ? (
-              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400">
-                No individuals have linked your Caregiver Code yet. Provide your code (<strong className="text-brand-400">{user?.caregiverCode}</strong>) to them.
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                No individuals have linked your Caregiver Code yet. Provide your code (<strong className="text-brand-600 dark:text-brand-400">{user?.caregiverCode}</strong>) to them.
               </div>
             ) : (
               <div className="space-y-2">
@@ -137,13 +136,13 @@ const CaregiverDashboardPage = () => {
                     onClick={() => fetchPatientOverview(p._id)}
                     className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all ${
                       selectedPatient === p._id
-                        ? 'bg-brand-600/20 border-brand-500 text-white font-semibold'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-800'
+                        ? 'bg-brand-500/10 dark:bg-brand-600/20 border-brand-500 text-slate-900 dark:text-white font-semibold'
+                        : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     <div>
                       <p className="font-bold text-sm">{p.name}</p>
-                      <p className="text-xs text-slate-400">{p.email}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{p.email}</p>
                     </div>
                     <Badge variant="success">{p.streak} Days</Badge>
                   </button>
@@ -154,13 +153,13 @@ const CaregiverDashboardPage = () => {
 
           {/* Caregiver Emergency Alert Feed */}
           <Card className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-rose-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <ShieldAlert className="w-5 h-5 text-rose-500" />
               <span>Caregiver Alerts ({alerts.length})</span>
             </h3>
 
             {alerts.length === 0 ? (
-              <p className="text-xs text-slate-400">No active alerts recorded.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">No active alerts recorded.</p>
             ) : (
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                 {alerts.map((a) => (
@@ -168,19 +167,19 @@ const CaregiverDashboardPage = () => {
                     key={a._id}
                     className={`p-3.5 rounded-xl border text-xs space-y-2 ${
                       a.severity === 'critical'
-                        ? 'bg-rose-950/30 border-rose-800/60 text-rose-200'
-                        : 'bg-amber-950/20 border-amber-800/40 text-amber-200'
+                        ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/60 text-rose-900 dark:text-rose-200'
+                        : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-bold uppercase tracking-wider">{a.alertType}</span>
-                      <span className="text-slate-400">{new Date(a.createdAt).toLocaleTimeString()}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{new Date(a.createdAt).toLocaleTimeString()}</span>
                     </div>
                     <p className="leading-relaxed">{a.message}</p>
                     {!a.read && (
                       <button
                         onClick={() => handleAcknowledgeAlert(a._id)}
-                        className="text-xs font-semibold underline text-slate-300 hover:text-white"
+                        className="text-xs font-semibold underline text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                       >
                         Acknowledge Alert
                       </button>
@@ -200,8 +199,8 @@ const CaregiverDashboardPage = () => {
               <Card className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-2xl font-black text-white">{patientDetails.patient.name}</h2>
-                    <p className="text-xs text-slate-400">{patientDetails.patient.email}</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">{patientDetails.patient.name}</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{patientDetails.patient.email}</p>
                   </div>
                   <div className="flex gap-2">
                     <Badge variant="success" className="text-sm px-3 py-1">
@@ -210,22 +209,22 @@ const CaregiverDashboardPage = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
-                  <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-                    <span className="text-xs text-slate-400 block mb-1">Evaluated Avg Risk</span>
-                    <span className="text-2xl font-black text-amber-400">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Evaluated Avg Risk</span>
+                    <span className="text-2xl font-black text-amber-500 dark:text-amber-400">
                       {patientDetails.summaryStats.averageRiskScore} / 100
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-                    <span className="text-xs text-slate-400 block mb-1">Recent Check-Ins</span>
-                    <span className="text-2xl font-black text-emerald-400">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Recent Check-Ins</span>
+                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
                       {patientDetails.summaryStats.recentCheckInCount}
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-                    <span className="text-xs text-slate-400 block mb-1">Emergency Logs</span>
-                    <span className="text-2xl font-black text-rose-400">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Emergency Logs</span>
+                    <span className="text-2xl font-black text-rose-600 dark:text-rose-400">
                       {patientDetails.emergencyLogs.length}
                     </span>
                   </div>
@@ -234,8 +233,8 @@ const CaregiverDashboardPage = () => {
 
               {/* Recent Check-Ins Timeline */}
               <Card className="space-y-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-indigo-500" />
                   <span>Recent Daily Check-Ins</span>
                 </h3>
 
@@ -243,19 +242,19 @@ const CaregiverDashboardPage = () => {
                   {patientDetails.checkIns.map((c) => (
                     <div
                       key={c._id}
-                      className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2 text-xs"
+                      className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-2 text-xs"
                     >
-                      <div className="flex items-center justify-between text-slate-300">
+                      <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
                         <span className="font-bold">{c.date}</span>
-                        <span>Risk Score: <strong className="text-white">{c.riskScore}/100</strong></span>
+                        <span>Risk Score: <strong className="text-slate-900 dark:text-white">{c.riskScore}/100</strong></span>
                       </div>
-                      <div className="flex gap-4 text-slate-400">
-                        <span>Mood: <strong className="text-emerald-400">{c.mood}/5</strong></span>
-                        <span>Craving: <strong className="text-rose-400">{c.cravingLevel}/10</strong></span>
-                        <span>Sleep: <strong className="text-indigo-400">{c.sleepHours} hrs</strong></span>
+                      <div className="flex gap-4 text-slate-600 dark:text-slate-400">
+                        <span>Mood: <strong className="text-emerald-600 dark:text-emerald-400">{c.mood}/5</strong></span>
+                        <span>Craving: <strong className="text-rose-600 dark:text-rose-400">{c.cravingLevel}/10</strong></span>
+                        <span>Sleep: <strong className="text-indigo-600 dark:text-indigo-400">{c.sleepHours} hrs</strong></span>
                       </div>
                       {c.notes && (
-                        <p className="text-slate-300 italic pt-1 border-t border-slate-800/60">
+                        <p className="text-slate-700 dark:text-slate-300 italic pt-1 border-t border-slate-200 dark:border-slate-800/60">
                           "{c.notes}"
                         </p>
                       )}
@@ -265,7 +264,7 @@ const CaregiverDashboardPage = () => {
               </Card>
             </>
           ) : (
-            <Card className="h-64 flex items-center justify-center text-slate-500 text-sm">
+            <Card className="h-64 flex items-center justify-center text-slate-500 dark:text-slate-400 text-sm">
               Select an assigned individual from the list to view their recovery overview.
             </Card>
           )}

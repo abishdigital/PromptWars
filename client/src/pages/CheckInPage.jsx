@@ -19,11 +19,11 @@ const TRIGGER_OPTIONS = [
 ];
 
 const MOOD_LEVELS = [
-  { val: 1, label: 'Very Low', icon: Frown, color: 'text-rose-400 border-rose-500/40 bg-rose-950/20' },
-  { val: 2, label: 'Low', icon: Meh, color: 'text-amber-400 border-amber-500/40 bg-amber-950/20' },
-  { val: 3, label: 'Neutral', icon: Smile, color: 'text-indigo-400 border-indigo-500/40 bg-indigo-950/20' },
-  { val: 4, label: 'Good', icon: SmilePlus, color: 'text-teal-400 border-teal-500/40 bg-teal-950/20' },
-  { val: 5, label: 'Great', icon: CheckCircle2, color: 'text-emerald-400 border-emerald-500/40 bg-emerald-950/20' },
+  { val: 1, label: 'Very Low', icon: Frown, color: 'text-rose-500 border-rose-500/40 bg-rose-50 dark:bg-rose-950/20' },
+  { val: 2, label: 'Low', icon: Meh, color: 'text-amber-500 border-amber-500/40 bg-amber-50 dark:bg-amber-950/20' },
+  { val: 3, label: 'Neutral', icon: Smile, color: 'text-indigo-500 border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/20' },
+  { val: 4, label: 'Good', icon: SmilePlus, color: 'text-teal-500 border-teal-500/40 bg-teal-50 dark:bg-teal-950/20' },
+  { val: 5, label: 'Great', icon: CheckCircle2, color: 'text-emerald-500 border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/20' },
 ];
 
 const CheckInPage = () => {
@@ -74,39 +74,39 @@ const CheckInPage = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <div className="text-center space-y-2">
-        <div className="inline-flex p-3 rounded-2xl bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-1">
+        <div className="inline-flex p-3 rounded-2xl bg-brand-500/10 text-brand-500 border border-brand-500/20 mb-1">
           <HeartHandshake className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-black text-white">Daily Recovery Check-In</h1>
-        <p className="text-sm text-slate-400">
-          Be honest with yourself. Tracking daily mood and urges strengthens self-awareness and recovery resilience.
+        <h1 className="text-3xl font-black text-slate-900 dark:text-white">Daily Recovery Check-In</h1>
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto">
+          Be honest with yourself. Tracking daily mood and urges strengthens self-awareness and long-term recovery resilience.
         </p>
       </div>
 
       {result ? (
         /* Check-In Success & AI Feedback Display Card */
         <Card className="space-y-6 border-emerald-500/30">
-          <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-950/30 border border-emerald-800/40 text-emerald-300">
-            <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-300">
+            <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" />
             <div>
-              <h3 className="font-bold text-lg text-white">Check-In Saved!</h3>
-              <p className="text-xs text-emerald-300">
-                Your sobriety streak is now <span className="font-bold text-white">{result.streak} Days</span>.
+              <h3 className="font-bold text-lg text-slate-900 dark:text-white">Check-In Saved!</h3>
+              <p className="text-xs text-emerald-700 dark:text-emerald-300">
+                Your sobriety streak is now <span className="font-bold text-slate-900 dark:text-white">{result.streak} Days</span>.
               </p>
             </div>
           </div>
 
-          <div className="space-y-3 p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
-            <div className="flex items-center gap-2 text-brand-400 font-bold">
-              <Sparkles className="w-5 h-5 text-brand-400" />
+          <div className="space-y-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-sm">
+              <Sparkles className="w-5 h-5 text-brand-500" />
               <span>AI Recovery Coach Feedback</span>
             </div>
-            <p className="text-sm text-slate-200 leading-relaxed italic">
+            <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed italic">
               "{result.checkIn.aiFeedback}"
             </p>
-            <div className="pt-3 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-              <span>Evaluated Risk Score: <strong className="text-white">{result.checkIn.riskScore}/100</strong></span>
-              <span>Craving Rating: <strong className="text-white">{result.checkIn.cravingLevel}/10</strong></span>
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
+              <span>Evaluated Risk Score: <strong className="text-slate-900 dark:text-white">{result.checkIn.riskScore}/100</strong></span>
+              <span>Craving Rating: <strong className="text-slate-900 dark:text-white">{result.checkIn.cravingLevel}/10</strong></span>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ const CheckInPage = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* 1. Mood Selection */}
             <div>
-              <label className="block text-sm font-bold text-white mb-3">
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-3">
                 1. How are you feeling overall today?
               </label>
               <div className="grid grid-cols-5 gap-2 sm:gap-3">
@@ -139,7 +139,7 @@ const CheckInPage = () => {
                       className={`flex flex-col items-center p-3 rounded-2xl border transition-all ${
                         isSelected
                           ? `${m.color} ring-2 ring-brand-500 scale-105 font-bold`
-                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                          : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-700'
                       }`}
                     >
                       <Icon className="w-6 h-6 mb-1" />
@@ -153,10 +153,10 @@ const CheckInPage = () => {
             {/* 2. Craving Intensity (1-10) */}
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-bold text-white">
+                <label className="text-sm font-bold text-slate-900 dark:text-white">
                   2. Craving / Urge Intensity (1 to 10)
                 </label>
-                <span className="text-lg font-black text-rose-400">{cravingLevel} / 10</span>
+                <span className="text-lg font-black text-rose-600 dark:text-rose-400">{cravingLevel} / 10</span>
               </div>
               <input
                 type="range"
@@ -164,9 +164,9 @@ const CheckInPage = () => {
                 max="10"
                 value={cravingLevel}
                 onChange={(e) => setCravingLevel(Number(e.target.value))}
-                className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500"
+                className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500"
               />
-              <div className="flex justify-between text-xs text-slate-500 mt-1">
+              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
                 <span>1 (No Cravings)</span>
                 <span>5 (Moderate Urge)</span>
                 <span>10 (Severe Crisis)</span>
@@ -175,7 +175,7 @@ const CheckInPage = () => {
 
             {/* 3. Triggers Multi-select */}
             <div>
-              <label className="block text-sm font-bold text-white mb-2">
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
                 3. Triggers or Vulnerabilities Identified Today
               </label>
               <div className="flex flex-wrap gap-2">
@@ -188,8 +188,8 @@ const CheckInPage = () => {
                       onClick={() => toggleTrigger(item)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                         isSelected
-                          ? 'bg-brand-600/30 text-brand-300 border-brand-500'
-                          : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:border-slate-700'
+                          ? 'bg-brand-500/20 text-brand-600 dark:text-brand-300 border-brand-500'
+                          : 'bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700'
                       }`}
                     >
                       {item}
@@ -201,7 +201,7 @@ const CheckInPage = () => {
 
             {/* 4. Sleep Hours */}
             <div>
-              <label className="block text-sm font-bold text-white mb-2">
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
                 4. Hours of Restful Sleep Last Night
               </label>
               <input
@@ -210,14 +210,14 @@ const CheckInPage = () => {
                 max="24"
                 value={sleepHours}
                 onChange={(e) => setSleepHours(e.target.value)}
-                className="w-full sm:w-48 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-white focus:outline-none focus:border-brand-500"
+                className="w-full sm:w-48 px-4 py-2 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
               />
             </div>
 
             {/* 5. Voice & Text Journal Notes */}
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-bold text-white">
+                <label className="text-sm font-bold text-slate-900 dark:text-white">
                   5. Daily Journal Notes & Thoughts
                 </label>
                 <VoiceInput onTranscript={handleVoiceTranscript} />
@@ -227,7 +227,7 @@ const CheckInPage = () => {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Write or click the microphone to speak your thoughts, emotions, or victories today..."
-                className="w-full px-4 py-3 rounded-2xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 text-sm"
+                className="w-full px-4 py-3 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-500 text-sm"
               />
             </div>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
@@ -16,11 +17,13 @@ import {
   Calendar,
   Sparkles,
   UserCheck,
+  Info,
 } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 
 const DashboardPage = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,8 +45,8 @@ const DashboardPage = () => {
 
   const getRiskBadge = (score) => {
     if (score >= 70) return <Badge variant="danger">High Risk ({score}/100)</Badge>;
-    if (score >= 40) return <Badge variant="warning font-semibold">Moderate Risk ({score}/100)</Badge>;
-    return <Badge variant="success font-semibold">Low Risk ({score}/100)</Badge>;
+    if (score >= 40) return <Badge variant="warning">Moderate Risk ({score}/100)</Badge>;
+    return <Badge variant="success">Low Risk ({score}/100)</Badge>;
   };
 
   if (loading) {
@@ -57,32 +60,32 @@ const DashboardPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Top Welcome Banner */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-brand-500/20 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-brand-500/20 bg-gradient-to-r from-brand-50 via-white to-indigo-50 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-brand-400">Welcome back,</span>
-            <span className="text-sm font-bold text-white">{user?.name}</span>
+            <span className="text-sm font-semibold text-brand-600 dark:text-brand-400">Welcome back,</span>
+            <span className="text-sm font-bold text-slate-900 dark:text-white">{user?.name}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
             Recovery Overview
           </h1>
-          <p className="text-sm text-slate-300 max-w-xl">
+          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl">
             "{user?.recoveryGoal || 'Building daily resilience and emotional stability step-by-step.'}"
           </p>
         </div>
 
         {/* Sobriety Streak Display */}
-        <div className="flex items-center gap-4 bg-slate-900/80 border border-slate-700/80 p-4 rounded-2xl shrink-0">
-          <div className="p-3 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+        <div className="flex items-center gap-4 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/80 p-4 rounded-2xl shrink-0 shadow-sm">
+          <div className="p-3 rounded-xl bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/30">
             <Flame className="w-8 h-8 animate-bounce" />
           </div>
           <div>
-            <span className="text-xs uppercase font-semibold text-slate-400 tracking-wider">
+            <span className="text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 tracking-wider">
               Sobriety Streak
             </span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-black text-white">{user?.streak || 0}</span>
-              <span className="text-sm font-medium text-amber-400">Days</span>
+              <span className="text-3xl font-black text-slate-900 dark:text-white">{user?.streak || 0}</span>
+              <span className="text-sm font-medium text-amber-500 dark:text-amber-400">Days</span>
             </div>
           </div>
         </div>
@@ -93,12 +96,17 @@ const DashboardPage = () => {
         {/* Daily Check In Prompt */}
         <Card hover className="flex flex-col justify-between space-y-4">
           <div className="space-y-2">
-            <div className="p-3 w-fit rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20">
-              <HeartHandshake className="w-6 h-6" />
+            <div className="flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-brand-500/10 text-brand-500 border border-brand-500/20">
+                <HeartHandshake className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/40 px-2 py-0.5 rounded-md">
+                Daily Tracker
+              </span>
             </div>
-            <h3 className="text-xl font-bold text-white">Daily Check-In</h3>
-            <p className="text-xs text-slate-400">
-              Log your mood, craving score, triggers, and journal notes for AI risk evaluation.
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Daily Check-In</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
+              Log mood, craving intensity, triggers, and personal reflections for automated AI risk evaluation.
             </p>
           </div>
           <Link to="/check-in">
@@ -112,17 +120,22 @@ const DashboardPage = () => {
         {/* AI Recovery Coach */}
         <Card hover className="flex flex-col justify-between space-y-4">
           <div className="space-y-2">
-            <div className="p-3 w-fit rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <Bot className="w-6 h-6" />
+            <div className="flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                <Bot className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] uppercase font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-md">
+                24/7 AI Coach
+              </span>
             </div>
-            <h3 className="text-xl font-bold text-white">AI Recovery Coach</h3>
-            <p className="text-xs text-slate-400">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">AI Recovery Coach</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Chat or speak with Gemini Recovery Coach for non-judgmental guidance and craving support.
             </p>
           </div>
           <Link to="/ai-coach">
-            <Button variant="secondary" size="md" className="w-full gap-2 border-indigo-500/30 text-indigo-300">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
+            <Button variant="secondary" size="md" className="w-full gap-2 border-indigo-500/30 text-indigo-600 dark:text-indigo-300">
+              <Sparkles className="w-4 h-4 text-indigo-500" />
               <span>Talk to Recovery Coach</span>
             </Button>
           </Link>
@@ -131,11 +144,16 @@ const DashboardPage = () => {
         {/* Crisis Emergency Button */}
         <Card hover className="flex flex-col justify-between space-y-4 border-rose-500/30">
           <div className="space-y-2">
-            <div className="p-3 w-fit rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              <ShieldAlert className="w-6 h-6 animate-pulse" />
+            <div className="flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                <ShieldAlert className="w-6 h-6 animate-pulse" />
+              </div>
+              <span className="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md">
+                Immediate Crisis
+              </span>
             </div>
-            <h3 className="text-xl font-bold text-white">Emergency Mode</h3>
-            <p className="text-xs text-slate-400">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Emergency Mode</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               One-tap crisis de-escalation, guided 5-4-3-2-1 grounding, box breathing, and caregiver alerts.
             </p>
           </div>
@@ -153,11 +171,13 @@ const DashboardPage = () => {
         <Card className="lg:col-span-2 space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-brand-400" />
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-brand-500" />
                 <span>Mood & Craving Trajectory</span>
               </h3>
-              <p className="text-xs text-slate-400">Tracking daily trends over recent check-ins</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Tracking daily mood vs craving trends over recent check-ins
+              </p>
             </div>
             {stats && getRiskBadge(stats.averageRiskScore)}
           </div>
@@ -176,14 +196,14 @@ const DashboardPage = () => {
                       <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="date" stroke="#64748b" fontSize={11} />
-                  <YAxis stroke="#64748b" fontSize={11} domain={[0, 10]} />
+                  <XAxis dataKey="date" stroke={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize={11} />
+                  <YAxis stroke={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize={11} domain={[0, 10]} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#151c28',
-                      borderColor: '#334155',
+                      backgroundColor: theme === 'dark' ? '#151c28' : '#ffffff',
+                      borderColor: theme === 'dark' ? '#334155' : '#e2e8f0',
                       borderRadius: '12px',
-                      color: '#f8fafc',
+                      color: theme === 'dark' ? '#f8fafc' : '#0f172a',
                     }}
                   />
                   <Area
@@ -208,7 +228,7 @@ const DashboardPage = () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-48 flex items-center justify-center text-slate-500 text-sm">
+            <div className="h-48 flex items-center justify-center text-slate-500 dark:text-slate-400 text-sm">
               No check-in data logged yet. Complete your first daily check-in to generate trends.
             </div>
           )}
@@ -217,39 +237,39 @@ const DashboardPage = () => {
         {/* Caregiver Status & Quick Stats */}
         <Card className="space-y-6 flex flex-col justify-between">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
-              <Activity className="w-5 h-5 text-indigo-400" />
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+              <Activity className="w-5 h-5 text-indigo-500" />
               <span>Recovery Summary</span>
             </h3>
 
             <div className="space-y-4 text-sm">
-              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-400">Total Check-Ins</span>
-                <span className="font-bold text-white">{stats?.totalCheckIns || 0}</span>
+              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-600 dark:text-slate-400">Total Check-Ins</span>
+                <span className="font-bold text-slate-900 dark:text-white">{stats?.totalCheckIns || 0}</span>
               </div>
-              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-400">Avg Mood Rating</span>
-                <span className="font-bold text-emerald-400">{stats?.averageMood || 0} / 5</span>
+              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-600 dark:text-slate-400">Avg Mood Rating</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">{stats?.averageMood || 0} / 5</span>
               </div>
-              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-400">Avg Craving Level</span>
-                <span className="font-bold text-rose-400">{stats?.averageCraving || 0} / 10</span>
+              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-600 dark:text-slate-400">Avg Craving Level</span>
+                <span className="font-bold text-rose-600 dark:text-rose-400">{stats?.averageCraving || 0} / 10</span>
               </div>
             </div>
           </div>
 
           {/* Caregiver Link */}
-          <div className="p-4 rounded-xl bg-indigo-950/30 border border-indigo-800/40 text-xs space-y-2">
-            <div className="flex items-center gap-2 text-indigo-300 font-semibold">
+          <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/40 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 font-semibold">
               <UserCheck className="w-4 h-4" />
               <span>Caregiver Support Status</span>
             </div>
             {user?.caregiverId ? (
-              <p className="text-slate-300">Connected to designated caregiver.</p>
+              <p className="text-slate-700 dark:text-slate-300">Connected to designated caregiver.</p>
             ) : (
               <div className="space-y-2">
-                <p className="text-slate-400">No caregiver linked yet. Link a caregiver in settings.</p>
-                <Link to="/settings" className="text-brand-400 font-semibold hover:underline block">
+                <p className="text-slate-600 dark:text-slate-400">No caregiver linked yet. Link a caregiver in settings.</p>
+                <Link to="/settings" className="text-brand-600 dark:text-brand-400 font-semibold hover:underline block">
                   Link Caregiver Code &rarr;
                 </Link>
               </div>

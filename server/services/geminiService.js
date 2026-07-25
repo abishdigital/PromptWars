@@ -7,13 +7,13 @@ if (env.GEMINI_API_KEY) {
   try {
     genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
   } catch (err) {
-    logger.warn('Failed to initialize GoogleGenerativeAI instance:', err.message);
+    logger.warn('[Gemini AI Init Warning] Failed to initialize GoogleGenerativeAI instance:', err.message);
   }
 }
 
 const SYSTEM_INSTRUCTION = `You are an empathetic, judgment-free AI Recovery Coach on the Recovery & Prevention Platform. 
 Your goal is to support users in addiction recovery, emotional wellness, craving management, and relapse prevention.
-Always speak with warmth, active listening, and calm encouragement.
+Always speak with warmth, active listening, and calm encouragement. Use markdown formatting (bold text, bullet points) when helpful.
 IMPORTANT: You are an AI Recovery Coach, not a medical doctor or therapist. Do not diagnose conditions or prescribe medications.
 If a user expresses severe distress, self-harm thoughts, or overwhelming crisis, immediately remind them of 988 Suicide & Crisis Lifeline (call/text 988) or SAMHSA Helpline (1-800-662-4357).`;
 
@@ -26,32 +26,37 @@ const generateRecoveryCoachResponse = async (history = [], prompt = '') => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    
-    // Format conversation history for Gemini
-    const formattedHistory = history.map((msg) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }],
-    }));
-
-    const chat = model.startChat({
-      history: [
-        {
-          role: 'user',
-          parts: [{ text: `System Instruction: ${SYSTEM_INSTRUCTION}` }],
-        },
-        {
-          role: 'model',
-          parts: [{ text: 'Understood. I am your empathetic Recovery Coach, here to support your recovery journey safely and without judgment.' }],
-        },
-        ...formattedHistory,
-      ],
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_INSTRUCTION,
     });
 
+    // Format previous messages cleanly for Gemini SDK
+    const formattedHistory = [];
+    for (const msg of history) {
+      if (!msg.text) continue;
+      const role = msg.role === 'user' ? 'user' : 'model';
+      // Prevent consecutive identical roles which Gemini disallows
+      if (formattedHistory.length > 0 && formattedHistory[formattedHistory.length - 1].role === role) {
+        formattedHistory[formattedHistory.length - 1].parts[0].text += `\n${msg.text}`;
+      } else {
+        formattedHistory.push({
+          role,
+          parts: [{ text: msg.text }],
+        });
+      }
+    }
+
+    // Ensure history starts with 'user' role if not empty
+    if (formattedHistory.length > 0 && formattedHistory[0].role !== 'user') {
+      formattedHistory.shift();
+    }
+
+    const chat = model.startChat({ history: formattedHistory });
     const result = await chat.sendMessage(prompt);
     return result.response.text();
   } catch (error) {
-    logger.error(`[Gemini AI Error] ${error.message}`);
+    logger.error(`[Gemini AI Chat Error] ${error.message}`);
     return getFallbackCoachResponse(prompt);
   }
 };
@@ -61,7 +66,7 @@ const generateRecoveryCoachResponse = async (history = [], prompt = '') => {
  */
 const analyzeCheckInRisk = async (checkInData) => {
   const { mood, cravingLevel, sleepHours, triggers, notes } = checkInData;
-  
+
   // Rule-based heuristic risk score baseline
   let baseRisk = 0;
   baseRisk += (6 - mood) * 12; // lower mood = higher risk (up to 60)
@@ -79,7 +84,11 @@ const analyzeCheckInRisk = async (checkInData) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_INSTRUCTION,
+    });
+
     const prompt = `Analyze this daily recovery check-in:
 - Mood (1-5): ${mood}
 - Craving Intensity (1-10): ${cravingLevel}
@@ -110,13 +119,17 @@ Provide a warm, supportive 2-3 sentence AI feedback message. Reinforce positive 
  */
 const generateEmergencyGrounding = async (triggers = []) => {
   const triggerText = triggers.length > 0 ? triggers.join(', ') : 'overwhelming distress';
-  
+
   if (!genAI) {
     return getFallbackEmergencyGuidance(triggerText);
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_INSTRUCTION,
+    });
+
     const prompt = `A user has just activated EMERGENCY CRISIS MODE on their recovery platform due to ${triggerText}.
 Provide an immediate, calm, reassuring response (under 120 words). 
 1. Reassure them that they are safe right now and cravings/distress are temporary.
@@ -136,45 +149,49 @@ Provide an immediate, calm, reassuring response (under 120 words).
  */
 const explainEducationalTopic = async (title, content) => {
   if (!genAI) {
-    return `### Key Takeaway on ${title}\n\n${content.slice(0, 300)}...\n\n*Focus on one day at a time. Small, consistent steps build strong neuro-pathways for long-term recovery.*`;
+    return `### Key Takeaways: ${title}\n\n* **Mindful Awareness**: Notice thoughts and feelings without judging yourself.\n* **Small Steps**: Recovery is built on small, consistent choices made every single day.\n* **Connection**: Lean on your support network and caregiver when challenges arise. You do not have to carry everything alone.`;
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const prompt = `Below is an educational article on recovery titled "${title}":\n\n${content}\n\nPlease summarize this into 3 simple, encouraging bullet points that an individual in recovery can easily digest and apply today.`;
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_INSTRUCTION,
+    });
+
+    const prompt = `Below is an educational article on recovery titled "${title}":\n\n${content}\n\nPlease summarize this into 3 simple, encouraging markdown bullet points that an individual in recovery can easily digest and apply today.`;
 
     const result = await model.generateContent(prompt);
     return result.response.text();
   } catch (error) {
     logger.error(`[Gemini Education Error] ${error.message}`);
-    return `### Key Takeaway on ${title}\n\n${content.slice(0, 300)}...`;
+    return `### Key Takeaways: ${title}\n\n* **Mindful Awareness**: Notice thoughts and feelings without judging yourself.\n* **Small Steps**: Recovery is built on small, consistent choices made every single day.\n* **Connection**: Lean on your support network and caregiver when challenges arise.`;
   }
 };
 
-// Fallback logic helpers
+// Conversational Fallback Logic Helpers
 const getFallbackCoachResponse = (prompt) => {
   const p = prompt.toLowerCase();
   if (p.includes('craving') || p.includes('urge')) {
-    return "I hear you, and it takes courage to speak up when experiencing a craving. Remember: cravings are like waves—they rise, peak, and inevitably fall. Take a deep breath with me, drink a glass of cold water, and try changing your immediate environment. You have handled tough moments before, and you can handle this one too.";
+    return "I hear you, and it takes genuine courage to speak up when experiencing a craving. \n\n**Remember**: Cravings are like ocean waves—they rise to a peak and inevitably subside within 15-20 minutes.\n\n* **Action Step**: Take a deep, slow breath right now. Drink a cold glass of water and change your physical environment.\n* **Grounding**: Focus on 3 objects in front of you. You have navigated difficult moments before, and you can ride this wave out safely.";
   }
   if (p.includes('anxious') || p.includes('stress') || p.includes('overwhelmed')) {
-    return "It sounds like things feel heavy right now. Take a moment to un-clench your jaw and drop your shoulders. Try placing one hand over your heart and taking three slow, deep breaths. You don't have to solve everything today—just focus on this current moment.";
+    return "It sounds like stress or anxiety is feeling heavy right now. Let's pause together.\n\n* **Un-clench your jaw** and drop your shoulders away from your ears.\n* **Place a hand on your heart** and take 3 deep, slow breaths in through your nose and out through your mouth.\n\nYou don't have to fix everything today—just focus on this single moment. What is one small thing that can bring you comfort right now?";
   }
-  return "Thank you for reaching out. Recovery is a day-by-day, step-by-step journey. Every moment you pause and reflect is a victory. What is one small, nourishing action you can take for yourself right now?";
+  return "Thank you for reaching out to your Recovery Coach. Recovery is a journey built one step, one hour, and one day at a time.\n\n* **Acknowledge Progress**: Every time you pause and reflect, you are building emotional resilience.\n* **Reflect**: What is one positive choice or self-care action you can take for yourself right now?";
 };
 
 const getFallbackCheckInFeedback = (mood, craving, risk) => {
   if (risk > 60) {
-    return "Thank you for checking in honestly today. It looks like you're navigating elevated stress or cravings. Remember that asking for support is a sign of strength. Consider reaching out to your caregiver or trying a 5-minute breathing session.";
+    return "Thank you for checking in honestly today. It looks like you're navigating elevated stress or cravings. Remember that reaching out is a mark of strength. Consider connecting with your caregiver or completing a 5-minute grounding exercise.";
   }
   if (mood >= 4) {
-    return "Wonderful job completing your check-in! Your positive mood and commitment to tracking your progress are strengthening your recovery foundation today. Keep up the great work!";
+    return "Awesome work completing your daily check-in! Your positive mindset and steady commitment to tracking progress strengthen your recovery foundation every day. Keep up the momentum!";
   }
-  return "Thank you for checking in today. Steady consistency is key to long-term recovery. Take things one step at a time, practice self-compassion, and stay connected with your support system.";
+  return "Thank you for checking in today. Steady consistency is key to long-term resilience. Practice self-compassion, take things one step at a time, and stay connected with your support system.";
 };
 
 const getFallbackEmergencyGuidance = (triggerText) => {
-  return `You are safe right now. You hit the emergency button because you are experiencing ${triggerText}, and taking this action proves your commitment to yourself. Take a deep breath. Focus on your feet touching the ground. Use the breathing tool and grounding exercise on screen. If you feel in immediate danger, call or text 988 anytime for free, confidential crisis support.`;
+  return `You are in a safe space. You activated Emergency Crisis Mode because you are experiencing **${triggerText}**, and taking this action proves your deep commitment to your safety and recovery.\n\n1. **Breathe**: Take a slow deep breath in for 4 seconds, hold for 4, exhale for 4.\n2. **Ground**: Focus your physical weight on your feet touching the ground.\n3. **Support**: Reaching out is strength. Call or text **988** anytime for 24/7 free, confidential crisis support.`;
 };
 
 module.exports = {
@@ -183,3 +200,4 @@ module.exports = {
   generateEmergencyGrounding,
   explainEducationalTopic,
 };
+

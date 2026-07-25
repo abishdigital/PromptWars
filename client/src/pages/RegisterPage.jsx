@@ -41,15 +41,21 @@ const RegisterPage = () => {
     }
   };
 
+  // Shared input class — light: white bg, dark text; dark: slate-900 bg, white text
+  const inputClass =
+    'w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors';
+
+  const labelClass = 'block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5';
+
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl bg-brand-600/20 text-brand-400 border border-brand-500/30 mb-3">
+          <div className="inline-flex p-3 rounded-2xl bg-brand-600/20 text-brand-500 border border-brand-500/30 mb-3">
             <Activity className="w-8 h-8" />
           </div>
-          <h2 className="text-3xl font-black text-white">Create Your Account</h2>
-          <p className="text-sm text-slate-400 mt-1">Begin your personalized recovery journey</p>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white">Create Your Account</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Begin your personalized recovery journey</p>
         </div>
 
         <Card className="shadow-2xl">
@@ -58,15 +64,13 @@ const RegisterPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Role Toggle Selector */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Select Your Role
-              </label>
+              <label className={labelClass}>Select Your Role</label>
               <div className="grid grid-cols-2 gap-3">
                 <label
                   className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${
                     selectedRole === 'patient'
-                      ? 'bg-brand-600/30 border-brand-500 text-white font-semibold'
-                      : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:border-slate-600'
+                      ? 'bg-brand-500/10 border-brand-500 text-brand-700 dark:text-brand-300 font-semibold'
+                      : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600'
                   }`}
                 >
                   <input
@@ -75,15 +79,15 @@ const RegisterPage = () => {
                     {...register('role')}
                     className="sr-only"
                   />
-                  <Heart className="w-4 h-4 text-emerald-400" />
+                  <Heart className="w-4 h-4 text-emerald-500" />
                   <span className="text-sm">Recovering Individual</span>
                 </label>
 
                 <label
                   className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${
                     selectedRole === 'caregiver'
-                      ? 'bg-brand-600/30 border-brand-500 text-white font-semibold'
-                      : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:border-slate-600'
+                      ? 'bg-brand-500/10 border-brand-500 text-brand-700 dark:text-brand-300 font-semibold'
+                      : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600'
                   }`}
                 >
                   <input
@@ -92,46 +96,40 @@ const RegisterPage = () => {
                     {...register('role')}
                     className="sr-only"
                   />
-                  <Users className="w-4 h-4 text-indigo-400" />
+                  <Users className="w-4 h-4 text-indigo-500" />
                   <span className="text-sm">Caregiver / Supporter</span>
                 </label>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Full Name
-              </label>
+              <label className={labelClass}>Full Name</label>
               <input
                 type="text"
                 {...register('name', { required: 'Name is required' })}
                 placeholder="Alex Morgan"
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
+                className={inputClass}
               />
               {errors.name && (
-                <span className="text-xs text-rose-400 mt-1 block">{errors.name.message}</span>
+                <span className="text-xs text-rose-500 dark:text-rose-400 mt-1 block">{errors.name.message}</span>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Email Address
-              </label>
+              <label className={labelClass}>Email Address</label>
               <input
                 type="email"
                 {...register('email', { required: 'Email is required' })}
                 placeholder="you@example.com"
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
+                className={inputClass}
               />
               {errors.email && (
-                <span className="text-xs text-rose-400 mt-1 block">{errors.email.message}</span>
+                <span className="text-xs text-rose-500 dark:text-rose-400 mt-1 block">{errors.email.message}</span>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Password
-              </label>
+              <label className={labelClass}>Password</label>
               <input
                 type="password"
                 {...register('password', {
@@ -139,23 +137,21 @@ const RegisterPage = () => {
                   minLength: { value: 6, message: 'Password must be at least 6 characters' },
                 })}
                 placeholder="••••••••"
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
+                className={inputClass}
               />
               {errors.password && (
-                <span className="text-xs text-rose-400 mt-1 block">{errors.password.message}</span>
+                <span className="text-xs text-rose-500 dark:text-rose-400 mt-1 block">{errors.password.message}</span>
               )}
             </div>
 
             {selectedRole === 'patient' && (
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Recovery Goal (Optional)
-                </label>
+                <label className={labelClass}>Recovery Goal (Optional)</label>
                 <input
                   type="text"
                   {...register('recoveryGoal')}
                   placeholder="e.g. 90 days sober & managing stress through mindfulness"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors text-sm"
+                  className={`${inputClass} text-sm`}
                 />
               </div>
             )}
@@ -171,9 +167,9 @@ const RegisterPage = () => {
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-700/60 text-center text-xs text-slate-400">
+          <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700/60 text-center text-xs text-slate-500 dark:text-slate-400">
             Already have an account?{' '}
-            <Link to="/login" className="text-brand-400 font-semibold hover:underline">
+            <Link to="/login" className="text-brand-600 dark:text-brand-400 font-semibold hover:underline">
               Sign In
             </Link>
           </div>

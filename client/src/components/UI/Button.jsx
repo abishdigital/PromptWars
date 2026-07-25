@@ -14,11 +14,11 @@ const Button = ({
 
   const variants = {
     primary: 'bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white focus:ring-brand-500 border border-brand-500/20 shadow-indigo-500/10',
-    secondary: 'bg-slate-800/80 hover:bg-slate-700 text-slate-200 focus:ring-slate-500 border border-slate-700',
+    secondary: 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 focus:ring-slate-400 border border-slate-300 dark:border-slate-700',
     danger: 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white focus:ring-rose-500 shadow-rose-500/20',
     success: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white focus:ring-emerald-500 shadow-emerald-500/20',
-    outline: 'border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white bg-transparent',
-    ghost: 'hover:bg-slate-800 text-slate-400 hover:text-slate-200 bg-transparent shadow-none',
+    outline: 'border border-slate-400 dark:border-slate-600 hover:border-slate-600 dark:hover:border-slate-400 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-transparent',
+    ghost: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 bg-transparent shadow-none',
   };
 
   const sizes = {

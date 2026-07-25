@@ -66,7 +66,7 @@ const LandingPage = () => {
             </div>
             <h3 className="text-xl font-bold text-white">One-Tap Emergency Protocol</h3>
             <p className="text-sm text-slate-400">
-              Immediate crisis de-escalation featuring interactive 5-4-3-2-1 sensory grounding, 4-7-8 box breathing, caregiver alerts, and 988 lifeline.
+              Immediate crisis de-escalation featuring interactive 5-4-3-2-1 sensory grounding, 4-7-8 box breathing, caregiver alerts, and iCall (9152987821) helpline connection.
             </p>
           </Card>
         </div>

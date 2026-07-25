@@ -6,9 +6,17 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "seed": "node seed.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
-  "keywords": ["recovery", "ai", "prevention", "health", "express", "mongodb"],
+  "keywords": [
+    "recovery",
+    "ai",
+    "prevention",
+    "health",
+    "express",
+    "mongodb"
+  ],
   "author": "Antigravity Engineering",
   "license": "MIT",
   "dependencies": {
@@ -17,6 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.2.0",
     "helmet": "^7.1.0",
     "joi": "^17.13.0",
@@ -31,6 +40,9 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/tests/**/*.test.js"]
+    "testTimeout": 60000,
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   }
 }

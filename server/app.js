@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
@@ -54,6 +55,9 @@ app.use(
 // Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Sanitize data against NoSQL injection attacks
+app.use(mongoSanitize());
 
 // Database auto-reconnect middleware for Serverless (Vercel) & Local Express
 app.use(async (req, res, next) => {
